@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asistente Comercial & Soporte - DeepSeek</title>
+    <title>Asistente Comercial & Soporte - IA</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -34,12 +34,30 @@
         }
         .config-box {
             margin-bottom: 15px;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #e1e1e1;
         }
         .config-box label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
+            color: #555;
+        }
+        .config-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .config-header button {
+            background: none;
+            border: none;
+            color: #007bff;
+            cursor: pointer;
+            font-size: 12px;
+            text-decoration: underline;
         }
         .config-box input {
             width: 100%;
@@ -47,6 +65,9 @@
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 4px;
+        }
+        #api-container {
+            display: block; /* Cambia a 'none' si quieres ocultarlo por defecto */
         }
         #chat-box {
             height: 380px;
@@ -105,19 +126,26 @@
 
 <div class="container">
     <h2>Asistente Comercial & Soporte</h2>
-    <div class="subtitle">Atención al cliente en tiempo real</div>
+    <div class="subtitle">Atención al cliente y ventas en tiempo real</div>
     
+    <!-- Configuración de API oculta/desplegable para proteger tu llave -->
     <div class="config-box">
-        <label for="apiKey">Tu API Key de DeepSeek:</label>
-        <input type="password" id="apiKey" value="sk-5d265601bdb64c5fa53245258c1eb57f" placeholder="Pega tu API Key aquí de forma segura">
+        <div class="config-header">
+            <label for="apiKey">Configuración de API:</label>
+            <button onclick="toggleApiBox()">Ocultar / Mostrar</button>
+        </div>
+        <div id="api-container">
+            <!-- AQUÍ VA TU CLAVE INTEGRADA DE FÁBRICA -->
+            <input type="password" id="apiKey" value="sk-5d265601bdb64c5fa53245258c1eb57f" placeholder="API Key de DeepSeek">
+        </div>
     </div>
 
     <div id="chat-box">
-        <div class="message ai-message">¡Hola! 👋 Bienvenido a nuestro canal de soporte y ventas. ¿En qué puedo colaborarte el día de hoy?</div>
+        <div class="message ai-message">¡Hola! 👋 Bienvenido a nuestro servicio de atención al cliente y soporte. ¿En qué puedo colaborarte o guiarte en tu compra el día de hoy?</div>
     </div>
 
     <div class="input-group">
-        <input type="text" id="userInput" placeholder="Escribe tu consulta..." onkeypress="handleKeyPress(event)">
+        <input type="text" id="userInput" placeholder="Escribe tu consulta aquí..." onkeypress="handleKeyPress(event)">
         <button onclick="enviarMensaje()">Enviar</button>
     </div>
 </div>
@@ -126,9 +154,18 @@
     let historialConversacion = [
         { 
             role: "system", 
-            content: "Eres un agente de IA experto en atención al cliente, soporte técnico y ventas. Tu tono es sumamente amable, empático, claro y orientado a resolver problemas o concretar ventas de manera profesional." 
+            content: "Eres un agente de IA experto y profesional en atención al cliente, soporte técnico y ventas. Tu tono es sumamente amable, empático, claro y orientado a resolver problemas paso a paso o a guiar al cliente hacia la mejor decisión de compra. Nunca inventes políticas falsas de precios." 
         }
     ];
+
+    function toggleApiBox() {
+        const box = document.getElementById('api-container');
+        if (box.style.display === 'none') {
+            box.style.display = 'block';
+        } else {
+            box.style.display = 'none';
+        }
+    }
 
     async function enviarMensaje() {
         const apiKey = document.getElementById('apiKey').value.trim();
@@ -137,7 +174,7 @@
         const mensajeTexto = userInput.value.trim();
 
         if (!apiKey) {
-            alert('Por favor, ingresa tu API Key de DeepSeek en la casilla superior.');
+            alert('Por favor, ingresa tu API Key de DeepSeek.');
             return;
         }
         if (!mensajeTexto) return;
@@ -150,7 +187,7 @@
         historialConversacion.push({ role: "user", content: mensajeTexto });
 
         const loadingId = 'loading-' + Date.now();
-        chatBox.innerHTML += `<div id="${loadingId}" class="message ai-message">Buscando solución...</div>`;
+        chatBox.innerHTML += `<div id="${loadingId}" class="message ai-message">Analizando respuesta...</div>`;
         chatBox.scrollTop = chatBox.scrollHeight;
 
         try {
@@ -181,7 +218,7 @@
         } catch (error) {
             const el = document.getElementById(loadingId);
             if (el) el.remove();
-            chatBox.innerHTML += `<div class="message ai-message" style="color:red;">Error de conexión: ${escapeHtml(error.message)}</div>`;
+            chatBox.innerHTML += `<div class="message ai-message" style="color:red;">Error de red: ${escapeHtml(error.message)}</div>`;
         }
         chatBox.scrollTop = chatBox.scrollHeight;
     }
