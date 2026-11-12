@@ -177,8 +177,8 @@
         chatBox.scrollTop = chatBox.scrollHeight;
 
         try {
-            // Usando el modelo general compatible por defecto
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+            // Modelo actualizado correctamente a gemini-1.5-flash
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
             const response = await fetch(url, {
                 method: 'POST',
